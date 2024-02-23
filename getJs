@@ -1,0 +1,223 @@
+let loopRunning = false;
+    let loopInterval;
+    let counter = 0;
+    let loopCounter = 0;
+    let townNames = [];
+    let townIds = [];
+
+    function getElementByXpath(path) {
+        return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    }
+
+    function createWindowTowns() {
+        const window = document.createElement('div');
+        window.id = 'secondWindow';
+        //window = document.querySelector('div[style*="position: fixed"]');
+        let isMouseDown = false;
+        let lastMouseX;
+        let lastMouseY;
+
+        window.addEventListener('mousedown', (e) => {
+            isMouseDown = true;
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+        });
+
+        window.addEventListener('mouseup', () => {
+            isMouseDown = false;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isMouseDown) return;
+            const dx = e.clientX - lastMouseX;
+            const dy = e.clientY - lastMouseY;
+            const rect = window.getBoundingClientRect();
+            window.style.left = rect.left + dx + 'px';
+            window.style.top = rect.top + dy + 'px';
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+        });
+
+        window.style.position = 'fixed';
+        window.style.top = '50px';
+        window.style.left = '50px';
+        window.style.backgroundColor = 'white';
+        window.style.border = '1px solid black';
+        window.style.padding = '10px';
+        window.style.zIndex = '9999';
+
+
+        const xButton = document.createElement('button');
+        xButton.textContent = 'close';
+        window.appendChild(xButton);
+        xButton.addEventListener('click', function() {
+            const win = document.getElementById('secondWindow');
+            document.body.removeChild(win);
+        });
+
+        if(townNames.length > 0) {
+            const ulList = document.createElement('ul');
+            for(let i=0 ; i < townNames.length ; i++) {
+                const liList = document.createElement('li');
+                liList.textContent = townNames[i];
+                ulList.appendChild(liList);
+            }
+            window.appendChild(ulList);
+        }
+
+
+
+        document.body.appendChild(window);
+
+    }
+
+    function createWindows(num, names) {
+        const window = document.createElement('div');
+        window.id = 'secondWindow';
+        //window = document.querySelector('div[style*="position: fixed"]');
+        let isMouseDown = false;
+        let lastMouseX;
+        let lastMouseY;
+
+        window.addEventListener('mousedown', (e) => {
+            isMouseDown = true;
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+        });
+
+        window.addEventListener('mouseup', () => {
+            isMouseDown = false;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isMouseDown) return;
+            const dx = e.clientX - lastMouseX;
+            const dy = e.clientY - lastMouseY;
+            const rect = window.getBoundingClientRect();
+            window.style.left = rect.left + dx + 'px';
+            window.style.top = rect.top + dy + 'px';
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+        });
+
+        window.style.position = 'fixed';
+        window.style.top = '50px';
+        window.style.left = '50px';
+        window.style.backgroundColor = 'white';
+        window.style.border = '1px solid black';
+        window.style.padding = '10px';
+        window.style.zIndex = '9999';
+
+
+        const xButton = document.createElement('button');
+        xButton.textContent = 'close';
+        window.appendChild(xButton);
+        xButton.addEventListener('click', function() {
+            const win = document.getElementById('secondWindow');
+            document.body.removeChild(win);
+        });
+
+        for(let i=0 ; i<num ; i++) {
+            const startButton = document.createElement('button');
+            startButton.textContent = names[i];
+            window.appendChild(startButton);
+        }
+
+        document.body.appendChild(window);
+
+    }
+
+    function createWindow() {
+        const window = document.createElement('div');
+        //window = document.querySelector('div[style*="position: fixed"]');
+        let isMouseDown = false;
+        let lastMouseX;
+        let lastMouseY;
+
+        window.addEventListener('mousedown', (e) => {
+            isMouseDown = true;
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+        });
+
+        window.addEventListener('mouseup', () => {
+            isMouseDown = false;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isMouseDown) return;
+            const dx = e.clientX - lastMouseX;
+            const dy = e.clientY - lastMouseY;
+            const rect = window.getBoundingClientRect();
+            window.style.left = rect.left + dx + 'px';
+            window.style.top = rect.top + dy + 'px';
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+        });
+
+
+        window.style.position = 'fixed';
+        window.style.top = '50px';
+        window.style.left = '50px';
+        window.style.backgroundColor = 'white';
+        window.style.border = '1px solid black';
+        window.style.padding = '10px';
+        window.style.zIndex = '9999';
+
+        const startButton = document.createElement('button');
+        startButton.textContent = 'Get Towns Info';
+        //startButton.addEventListener('click', function() {createWindows(2, ['1', '2']);}, false);
+        startButton.addEventListener('click', createWindowTowns);
+
+
+        const stopButton = document.createElement('button');
+        stopButton.textContent = 'open towns';
+        stopButton.addEventListener('click', clickToShowAllTowns);
+
+        window.appendChild(startButton);
+        window.appendChild(stopButton);
+
+        document.body.appendChild(window);
+    }
+
+    function printTownInfo() {
+        console.log('Town Info:');
+        for (let i = 0; i < townNames.length; i++) {
+            console.log(`Name: ${townNames[i]}, ID: ${townIds[i]}`);
+        }
+        
+    }
+
+    // Function to click on the button that shows all towns
+    function clickToShowAllTowns() {
+        const button = document.getElementsByClassName('town_name_area')[0].children[2].children[1]; // Adjust the index as needed
+        if (button) {
+            button.click();
+            setTimeout(function() {
+                const test = getElementByXpath('//*[@id="town_groups_list"]/div[1]/div/div[2]/div[1]/div[1]/span');
+                test.click();
+            }, 2000);
+
+            setTimeout(scrapeTownInfo, 2000); // Adjust the timeout as needed
+        } else {
+            console.error('Button not found!');
+        }
+    }
+
+    // Function to scrape town names and IDs from the page
+    function scrapeTownInfo() {
+        const townElements = document.querySelectorAll('.town_name');
+        const townIdElements = document.getElementsByClassName('town_group_town');
+
+        townNames = [];
+        townIds = [];
+
+        for (let i = 0; i < townElements.length-1; i++) {
+            townNames.push(townElements[i].textContent.trim());
+            const id = townIdElements[i].dataset.townid;
+            townIds.push(id);
+        }
+        printTownInfo();
+    }
+
+    createWindow();
